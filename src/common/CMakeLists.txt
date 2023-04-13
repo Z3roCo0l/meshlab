@@ -111,6 +111,7 @@ set(SOURCES
 	plugins/interfaces/decorate_plugin.cpp
 	plugins/interfaces/filter_plugin.cpp
 	plugins/interfaces/io_plugin.cpp
+        plugins/interfaces/edit_plugin.cpp
 	plugins/action_searcher.cpp
 	plugins/meshlab_plugin_type.cpp
 	plugins/plugin_manager.cpp

@@ -37,6 +37,10 @@ class EditPaintFactory : public QObject, public EditPlugin
 public:
 	EditPaintFactory();
 	virtual ~EditPaintFactory() { delete editPaint; }
+    void initGlobalParameterList(RichParameterList& /*paramList*/)
+    {
+        // No global parameters needed for this plugin
+    }
 
 	virtual QString pluginName() const;
 

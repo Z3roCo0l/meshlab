@@ -39,6 +39,9 @@ EditSelectFactory::EditSelectFactory()
 	foreach(QAction *editAction, actionList)
 		editAction->setCheckable(true); 	
 }
+void EditSelectFactory::initGlobalParameterList(RichParameterList& defaultGlobalParamSet) {
+    defaultGlobalParamSet.addParam(RichBool(InvertCtrlBehavior(), true,"Inverting the behavior of the CTRL modifier on edit selec rectangle tools",""));
+}
 
 QString EditSelectFactory::pluginName() const
 {

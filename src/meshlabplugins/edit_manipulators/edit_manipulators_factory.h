@@ -37,6 +37,10 @@ class EditManipulatorsFactory : public QObject, public EditPlugin
 public:
 	EditManipulatorsFactory();
 	virtual ~EditManipulatorsFactory() { delete editManipulators; }
+    void initGlobalParameterList(RichParameterList& /*paramList*/)
+    {
+        // No global parameters needed for this plugin
+    }
 
 	virtual QString pluginName() const;
 

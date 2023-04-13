@@ -37,6 +37,10 @@ class PointEditFactory : public QObject, public EditPlugin
 public:
 	PointEditFactory();
 	virtual ~PointEditFactory() { delete editPoint; }
+    void initGlobalParameterList(RichParameterList& /*paramList*/)
+    {
+        // No global parameters needed for this plugin
+    }
 
 	virtual QString pluginName() const;
 

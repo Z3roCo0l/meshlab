@@ -37,6 +37,10 @@ class EditMeasureFactory : public QObject, public EditPlugin
 public:
 	EditMeasureFactory();
 	virtual ~EditMeasureFactory() { delete editMeasure; }
+    void initGlobalParameterList(RichParameterList& /*paramList*/)
+    {
+        // No global parameters needed for this plugin
+    }
 
 	virtual QString pluginName() const;
 

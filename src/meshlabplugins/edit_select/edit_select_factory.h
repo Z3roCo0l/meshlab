@@ -37,6 +37,8 @@ public:
 	EditSelectFactory();
 	virtual ~EditSelectFactory() { delete editSelect; }
 
+    virtual void initGlobalParameterList(RichParameterList& defaultGlobalParamSet);
+
 	virtual QString pluginName() const;
 
 	//get the edit tool for the given action
@@ -44,8 +46,10 @@ public:
 
 	//get the description for the given action
 	virtual QString getEditToolDescription(const QAction*);
+    inline QString InvertCtrlBehavior() const { return  "MeshLab::Editors::InvertCTRLBehavior" ; }
 
 private:
+
 	QAction *editSelect;
 	QAction *editSelectVert;
 	QAction *editSelectConnected;

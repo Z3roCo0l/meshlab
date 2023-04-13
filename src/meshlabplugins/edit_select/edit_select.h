@@ -24,25 +24,26 @@
 #define EDITPLUGIN_H
 
 #include <common/plugins/interfaces/edit_plugin.h>
+#include <meshlab/dialogs/setting_dialog.h>
+
+
 
 class EditSelectPlugin : public QObject, public EditTool
 {
 	Q_OBJECT
 
-
 public:
+
 	enum { SELECT_FACE_MODE, SELECT_VERT_MODE, SELECT_CONN_MODE, SELECT_AREA_MODE };
 
 	EditSelectPlugin(int _ConnectedMode);
-
 	virtual ~EditSelectPlugin() {}
-
 	static QString info();
 	void suggestedRenderingData(MeshModel & m, MLRenderingData& dt);
-	bool startEdit(MeshModel &/*m*/, GLArea * /*parent*/, MLSceneGLSharedDataContext* /*cont*/);
+    bool startEdit(MeshModel &/*m*/, GLArea * /*parent*/, MLSceneGLSharedDataContext* /*cont*/);
 	void endEdit(MeshModel &/*m*/, GLArea * /*parent*/, MLSceneGLSharedDataContext* /*cont*/) {}
 	void decorate(MeshModel &/*m*/, GLArea * /*parent*/);
-	void mousePressEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *);
+    void mousePressEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *);
 	void mouseMoveEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *);
 	void mouseReleaseEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *);
 	void keyReleaseEvent(QKeyEvent *, MeshModel &/*m*/, GLArea *);
@@ -71,12 +72,13 @@ signals:
 	void setDecorator(QString, bool);
 
 private:
+
 	typedef enum { SMAdd, SMClear, SMSub } ComposingSelMode; // How the selection are composed
-	ComposingSelMode composingSelMode;
+    ComposingSelMode composingSelMode;
 	bool selectFrontFlag;
 	void DrawXORRect(GLArea * gla, bool doubleDraw);
 	void DrawXORPolyLine(GLArea * gla);
 	void doSelection(MeshModel &m, GLArea *gla, int mode);
-};
 
+};
 #endif

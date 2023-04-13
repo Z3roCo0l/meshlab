@@ -22,12 +22,19 @@
  ****************************************************************************/
 
 #include "edit_select.h"
+#include <wrap/gl/addons.h>
+
+#include <meshlab/glarea.h>
+#include <meshlab/mainwindow.h>
 #include <common/GLExtensionsManager.h>
+#include <common/plugins/plugin_manager.h>
 #include <wrap/gl/pick.h>
 #include <wrap/qt/device_to_logical.h>
 #include <meshlab/glarea.h>
 #include <vcg/space/intersection2.h>
 #include <QApplication>
+#include <qsettings.h>
+
 
 
 using namespace std;
@@ -302,44 +309,87 @@ void EditSelectPlugin::keyPressEvent(QKeyEvent * /*event*/, MeshModel & /*m*/, G
 
 void EditSelectPlugin::mousePressEvent(QMouseEvent * event, MeshModel &m, GLArea *gla)
 {
-	if (selectionMode == SELECT_AREA_MODE)
-	{
-		selPolyLine.push_back(QTLogicalToOpenGL(gla, event->pos()));
-		return;
-	}
+    if (selectionMode == SELECT_AREA_MODE)
+    {
+        selPolyLine.push_back(QTLogicalToOpenGL(gla, event->pos()));
+        return;
+    }
 
-	LastSelVert.clear();
-	LastSelFace.clear();
+    LastSelVert.clear();
+    LastSelFace.clear();
+    QSettings boolean;
+    bool ctrlState = boolean.value("MeshLab::Editors::InvertCTRLBehavior", false).toBool();
+    //bool ctrlState = true;
 
-    if ((!(event->modifiers() & Qt::ControlModifier) ||
-        (event->modifiers() & Qt::ShiftModifier)))
-	{
-		CMeshO::FaceIterator fi;
-		for (fi = m.cm.face.begin(); fi != m.cm.face.end(); ++fi)
-			if (!(*fi).IsD() && (*fi).IsS())
-				LastSelFace.push_back(&*fi);
+    if (ctrlState) {
+        if ((!(event->modifiers() & Qt::ControlModifier) ||
+            (event->modifiers() & Qt::ShiftModifier)))
+        {
+            CMeshO::FaceIterator fi;
+            for (fi = m.cm.face.begin(); fi != m.cm.face.end(); ++fi)
+                if (!(*fi).IsD() && (*fi).IsS())
+                    LastSelFace.push_back(&*fi);
 
-		CMeshO::VertexIterator vi;
-		for (vi = m.cm.vert.begin(); vi != m.cm.vert.end(); ++vi)
-			if (!(*vi).IsD() && (*vi).IsS())
-				LastSelVert.push_back(&*vi);
-	}
+            CMeshO::VertexIterator vi;
+            for (vi = m.cm.vert.begin(); vi != m.cm.vert.end(); ++vi)
+                if (!(*vi).IsD() && (*vi).IsS())
+                    LastSelVert.push_back(&*vi);
+        }
+        composingSelMode = SMAdd;
+        if (event->modifiers() & Qt::ControlModifier)
+            composingSelMode = SMClear;
+        else if (event->modifiers() & Qt::ShiftModifier)
+            composingSelMode = SMSub;
+
+        if (event->modifiers() & Qt::AltModifier)
+            selectFrontFlag = true;
+        else
+            selectFrontFlag = false;
+
+    }
+    else {
+        if ((event->modifiers() & Qt::ControlModifier) ||
+                (event->modifiers() & Qt::ShiftModifier)) {
+               CMeshO::FaceIterator fi;
+               for (fi = m.cm.face.begin(); fi != m.cm.face.end(); ++fi)
+                   if (!(*fi).IsD() && (*fi).IsS())
+                       LastSelFace.push_back(&*fi);
+
+               CMeshO::VertexIterator vi;
+               for (vi = m.cm.vert.begin(); vi != m.cm.vert.end(); ++vi)
+                   if (!(*vi).IsD() && (*vi).IsS())
+                       LastSelVert.push_back(&*vi);
+           }
+        composingSelMode = SMClear;
+        if (event->modifiers() & Qt::ControlModifier)
+            composingSelMode = SMAdd;
+        else if (event->modifiers() & Qt::ShiftModifier)
+            composingSelMode = SMSub;
+
+        if (event->modifiers() & Qt::AltModifier)
+            selectFrontFlag = true;
+        else
+            selectFrontFlag = false;
+
+    }
 
     composingSelMode = SMAdd;
     if (event->modifiers() & Qt::ControlModifier)
         composingSelMode = SMClear;
     else if (event->modifiers() & Qt::ShiftModifier)
-		composingSelMode = SMSub;
+        composingSelMode = SMSub;
 
-	if (event->modifiers() & Qt::AltModifier)
+    if (event->modifiers() & Qt::AltModifier)
         selectFrontFlag = true;
-	else
-		selectFrontFlag = false;
+    else
+        selectFrontFlag = false;
 
-	start = QTLogicalToOpenGL(gla, event->pos());
-	cur = start;
-	return;
+    start = QTLogicalToOpenGL(gla, event->pos());
+    cur = start;
+    return;
 }
+
+
 
 void EditSelectPlugin::mouseMoveEvent(QMouseEvent * event, MeshModel & /*m*/, GLArea * gla)
 {

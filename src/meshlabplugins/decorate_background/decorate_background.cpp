@@ -144,6 +144,7 @@ void DecorateBackgroundPlugin::decorateDoc(const QAction* a, MeshDocument &m, co
         {
             emit this->askViewerShot("backGrid");
 
+
             Scalarm scaleBB = parset->getFloat(BoxRatioParam());
             Scalarm majorTick = fabs(parset->getFloat(GridMajorParam()));
             Scalarm minorTick = fabs(parset->getFloat(GridMinorParam()));

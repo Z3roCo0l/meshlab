@@ -83,9 +83,9 @@ public:
 	virtual void decorate(MeshModel &m, GLArea *parent, QPainter * /*p*/) { decorate(m, parent); }
 	virtual void decorate(MeshModel &/*m*/, GLArea * /*parent*/) {}
 
-	virtual void mousePressEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *) = 0;
+    virtual void mousePressEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *) = 0;
 	virtual void mouseMoveEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *) = 0;
-	virtual void mouseReleaseEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *) = 0;
+    virtual void mouseReleaseEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *) = 0;
 	virtual void keyReleaseEvent(QKeyEvent *, MeshModel &/*m*/, GLArea *) {}
 	virtual void keyPressEvent(QKeyEvent *, MeshModel &/*m*/, GLArea *) {}
 	virtual void wheelEvent(QWheelEvent*, MeshModel &/*m*/, GLArea *) {}
@@ -105,10 +105,12 @@ public:
 class EditPlugin : public MeshLabPlugin
 {
 public:
-	EditPlugin() {}
+    EditPlugin() {}
 	virtual ~EditPlugin() {}
 
-	//gets a list of actions available from this plugin
+    virtual void initGlobalParameterList(RichParameterList& defaultGlobalParamSet);
+
+    //gets a list of actions available from this plugin
 	virtual std::list<QAction *> actions() const {return actionList;};
 
 	//get the edit tool for the given action
@@ -118,7 +120,8 @@ public:
 	virtual QString getEditToolDescription(const QAction *) = 0;
 
 protected:
-	std::list<QAction*> actionList;
+    std::list<QAction*> actionList;
+
 };
 
 #define EDIT_PLUGIN_IID  "vcg.meshlab.EditPlugin/1.0"

@@ -62,7 +62,7 @@ public:
 	bool startEdit(MeshModel &/*m*/, GLArea * /*parent*/, MLSceneGLSharedDataContext* /*cont*/);
 	void endEdit(MeshModel &/*m*/, GLArea * /*parent*/, MLSceneGLSharedDataContext* /*cont*/);
 	void decorate(MeshModel &/*m*/, GLArea * /*parent*/);
-	void mousePressEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *);
+    void mousePressEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *);
 	void mouseMoveEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *);
 	void mouseReleaseEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *);
 	void tabletEvent(QTabletEvent *, MeshModel &, GLArea *);

@@ -36,6 +36,10 @@ class EditMutualCorrsFactory : public QObject, public EditPlugin
 public:
 	EditMutualCorrsFactory();
 	virtual ~EditMutualCorrsFactory() { delete editMutualCorrs; }
+    void initGlobalParameterList(RichParameterList& /*paramList*/)
+    {
+        // No global parameters needed for this plugin
+    }
 
 	virtual QString pluginName() const;
 
