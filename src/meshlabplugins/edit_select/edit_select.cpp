@@ -40,8 +40,9 @@
 using namespace std;
 using namespace vcg;
 
-EditSelectPlugin::EditSelectPlugin(int ConnectedMode) :selectionMode(ConnectedMode) {
+EditSelectPlugin::EditSelectPlugin(RichParameterList* cgp, int ConnectedMode) :selectionMode(ConnectedMode) {
 	isDragging = false;
+    currentGlobalParamSet = cgp;
 }
 
 QString EditSelectPlugin::info()
@@ -274,11 +275,11 @@ void EditSelectPlugin::doSelection(MeshModel &m, GLArea *gla, int mode)
 void EditSelectPlugin::keyPressEvent(QKeyEvent * /*event*/, MeshModel & /*m*/, GLArea *gla)
 {
 
-	if (selectionMode == SELECT_AREA_MODE)
-		return;
+    if (selectionMode == SELECT_AREA_MODE)
+        return;
         gla->setCursor(QCursor(QPixmap(":/images/sel_rect_plus.png"), 1, 1));
 
-	Qt::KeyboardModifiers mod = QApplication::queryKeyboardModifiers();
+    Qt::KeyboardModifiers mod = QApplication::queryKeyboardModifiers();
     if(selectionMode == SELECT_AREA_MODE)
     {
         if (mod & Qt::ControlModifier)
@@ -309,6 +310,7 @@ void EditSelectPlugin::keyPressEvent(QKeyEvent * /*event*/, MeshModel & /*m*/, G
 
 void EditSelectPlugin::mousePressEvent(QMouseEvent * event, MeshModel &m, GLArea *gla)
 {
+    bool ctrlState = currentGlobalParamSet->getBool("MeshLab::Editors::InvertCTRLBehavior");
     if (selectionMode == SELECT_AREA_MODE)
     {
         selPolyLine.push_back(QTLogicalToOpenGL(gla, event->pos()));
@@ -317,9 +319,6 @@ void EditSelectPlugin::mousePressEvent(QMouseEvent * event, MeshModel &m, GLArea
 
     LastSelVert.clear();
     LastSelFace.clear();
-    QSettings boolean;
-    bool ctrlState = boolean.value("MeshLab::Editors::InvertCTRLBehavior", false).toBool();
-    //bool ctrlState = true;
 
     if (ctrlState) {
         if ((!(event->modifiers() & Qt::ControlModifier) ||
@@ -372,18 +371,6 @@ void EditSelectPlugin::mousePressEvent(QMouseEvent * event, MeshModel &m, GLArea
             selectFrontFlag = false;
 
     }
-
-    composingSelMode = SMAdd;
-    if (event->modifiers() & Qt::ControlModifier)
-        composingSelMode = SMClear;
-    else if (event->modifiers() & Qt::ShiftModifier)
-        composingSelMode = SMSub;
-
-    if (event->modifiers() & Qt::AltModifier)
-        selectFrontFlag = true;
-    else
-        selectFrontFlag = false;
-
     start = QTLogicalToOpenGL(gla, event->pos());
     cur = start;
     return;

@@ -104,6 +104,11 @@ void MainWindow::updateCustomSettings()
 {
 	mwsettings.updateGlobalParameterList(currentGlobalParams);
 	emit dispatchCustomSettings(currentGlobalParams);
+
+}
+RichParameterList& MainWindow::getCurrentParameterList()
+{
+    return currentGlobalParams;
 }
 
 void MainWindow::updateWindowMenu()

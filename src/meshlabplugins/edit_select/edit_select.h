@@ -25,7 +25,7 @@
 
 #include <common/plugins/interfaces/edit_plugin.h>
 #include <meshlab/dialogs/setting_dialog.h>
-
+#include <QObject>
 
 
 class EditSelectPlugin : public QObject, public EditTool
@@ -36,7 +36,7 @@ public:
 
 	enum { SELECT_FACE_MODE, SELECT_VERT_MODE, SELECT_CONN_MODE, SELECT_AREA_MODE };
 
-	EditSelectPlugin(int _ConnectedMode);
+    EditSelectPlugin(RichParameterList* cgp, int _ConnectedMode);
 	virtual ~EditSelectPlugin() {}
 	static QString info();
 	void suggestedRenderingData(MeshModel & m, MLRenderingData& dt);
@@ -48,6 +48,7 @@ public:
 	void mouseReleaseEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *);
 	void keyReleaseEvent(QKeyEvent *, MeshModel &/*m*/, GLArea *);
 	void keyPressEvent(QKeyEvent *, MeshModel &/*m*/, GLArea *);
+    EditTool* getEditTool(const QAction *action);
 
 	vcg::Point2f start;
 	vcg::Point2f cur;
@@ -72,7 +73,8 @@ signals:
 	void setDecorator(QString, bool);
 
 private:
-
+    RichParameterList* currentGlobalParamSet;
+    bool ctrlState;
 	typedef enum { SMAdd, SMClear, SMSub } ComposingSelMode; // How the selection are composed
     ComposingSelMode composingSelMode;
 	bool selectFrontFlag;

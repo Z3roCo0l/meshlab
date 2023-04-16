@@ -23,6 +23,7 @@
 
 #include "edit_select_factory.h"
 #include "edit_select.h"
+#include "common/parameters/rich_parameter_list.h"
 
 EditSelectFactory::EditSelectFactory()
 {
@@ -48,20 +49,51 @@ QString EditSelectFactory::pluginName() const
 	return "EditSelect";
 }
 
+//TODO - same as under this lines but better
+//EditTool* EditSelectFactory::getEditTool(const QAction *action, MainWindow *mainWindow)
+//{
+//    static EditSelectPlugin selectFaceMode(EditSelectPlugin::SELECT_FACE_MODE);
+//    static EditSelectPlugin selectConnMode(EditSelectPlugin::SELECT_CONN_MODE);
+//    static EditSelectPlugin selectVertMode(EditSelectPlugin::SELECT_VERT_MODE);
+//    static EditSelectPlugin selectAreaMode(EditSelectPlugin::SELECT_AREA_MODE);
+
+//    EditSelectPlugin* result = nullptr;
+//    if(action == editSelect)
+//        result = &selectFaceMode;
+//    else if(action == editSelectConnected)
+//        result = &selectConnMode;
+//    else if(action == editSelectVert)
+//        result = &selectVertMode;
+//    else if (action == editSelectArea)
+//        result = &selectAreaMode;
+
+//    QObject::connect(mainWindow, SIGNAL(dispatchCustomSettings()), result, SLOT(updateCustomSettingValues()));
+
+//    if (result == nullptr) {
+//        assert(0);
+//    }
+
+//    return static_cast<EditTool*>(result);
+//}
+
 //get the edit tool for the given action
 EditTool* EditSelectFactory::getEditTool(const QAction *action)
 {
-	if(action == editSelect)
-		return new EditSelectPlugin(EditSelectPlugin::SELECT_FACE_MODE);
-	else if(action == editSelectConnected)
-		return new EditSelectPlugin(EditSelectPlugin::SELECT_CONN_MODE);
-	else if(action == editSelectVert)
-		return new EditSelectPlugin(EditSelectPlugin::SELECT_VERT_MODE);
-	else if (action == editSelectArea)
-		return new EditSelectPlugin(EditSelectPlugin::SELECT_AREA_MODE);
+    EditSelectPlugin* result = nullptr;
+    if(action == editSelect)
+        result = new EditSelectPlugin(currentGlobalParamSet,EditSelectPlugin::SELECT_FACE_MODE);
+    else if(action == editSelectConnected)
+        result = new EditSelectPlugin(currentGlobalParamSet,EditSelectPlugin::SELECT_CONN_MODE);
+    else if(action == editSelectVert)
+        result = new EditSelectPlugin(currentGlobalParamSet,EditSelectPlugin::SELECT_VERT_MODE);
+    else if (action == editSelectArea)
+        result = new EditSelectPlugin(currentGlobalParamSet,EditSelectPlugin::SELECT_AREA_MODE);
 
-	assert(0); //should never be asked for an action that isn't here
-	return nullptr;
+    if (result == nullptr) {
+        assert(0);
+    }
+
+    return (EditTool*)result;
 }
 
 QString EditSelectFactory::getEditToolDescription(const QAction * /*a*/)

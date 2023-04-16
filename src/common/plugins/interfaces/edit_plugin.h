@@ -119,9 +119,14 @@ public:
 	//get the description for the given action
 	virtual QString getEditToolDescription(const QAction *) = 0;
 
+    void setCurrentGlobalParamSet(RichParameterList* cgp)
+    {
+        currentGlobalParamSet = cgp;
+    }
+
 protected:
     std::list<QAction*> actionList;
-
+    RichParameterList* currentGlobalParamSet;
 };
 
 #define EDIT_PLUGIN_IID  "vcg.meshlab.EditPlugin/1.0"

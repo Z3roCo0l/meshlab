@@ -946,6 +946,7 @@ void MainWindow::loadDefaultSettingsFromPlugins()
     //edit settings
     for (EditPlugin* ep : PM.editPluginFactoryIterator()) {
         ep->initGlobalParameterList(defaultGlobalParams);
+        ep->setCurrentGlobalParamSet(&currentGlobalParams);
     }
 }
 
