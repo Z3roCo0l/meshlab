@@ -27,7 +27,6 @@
 #include <meshlab/dialogs/setting_dialog.h>
 #include <QObject>
 
-
 class EditSelectPlugin : public QObject, public EditTool
 {
 	Q_OBJECT
@@ -39,17 +38,18 @@ public:
     EditSelectPlugin(RichParameterList* cgp, int _ConnectedMode);
 	virtual ~EditSelectPlugin() {}
 	static QString info();
-	void suggestedRenderingData(MeshModel & m, MLRenderingData& dt);
+    void suggestedRenderingData(MeshModel & m, MLRenderingData& dt);
     bool startEdit(MeshModel &/*m*/, GLArea * /*parent*/, MLSceneGLSharedDataContext* /*cont*/);
-	void endEdit(MeshModel &/*m*/, GLArea * /*parent*/, MLSceneGLSharedDataContext* /*cont*/) {}
-	void decorate(MeshModel &/*m*/, GLArea * /*parent*/);
-    void mousePressEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *);
-	void mouseMoveEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *);
-	void mouseReleaseEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *);
-    void keyReleaseEvent(QKeyEvent *, MeshModel &m, GLArea *gla);
+    void endEdit(MeshModel &/*m*/, GLArea * /*parent*/, MLSceneGLSharedDataContext* /*cont*/) {}
+    void decorate(MeshModel &/*m*/, GLArea * /*parent*/);
+    void mousePressEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *gla);
+    void mouseMoveEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *gla);
+    void mouseReleaseEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *gla);
+    virtual void keyReleaseEvent(QKeyEvent *, MeshModel &m, GLArea *gla);
     void keyPressEvent(QKeyEvent *, MeshModel &m, GLArea *gla);
     EditTool* getEditTool(const QAction *action);
-    bool eventFilter(QObject *obj, QEvent *event) override;
+    bool keyReleaseEventFilter(QObject *obj, QEvent *event);
+
 
 	vcg::Point2f start;
 	vcg::Point2f cur;

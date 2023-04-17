@@ -33,7 +33,6 @@
 #include <meshlab/glarea.h>
 #include <vcg/space/intersection2.h>
 #include <QApplication>
-#include <QTimer>
 
 
 using namespace std;
@@ -70,26 +69,23 @@ void EditSelectPlugin::suggestedRenderingData(MeshModel & /*m*/, MLRenderingData
 
 	dt.set(opts);
 }
-
-
-bool EditSelectPlugin::eventFilter(QObject *obj, QEvent *event)
+bool EditSelectPlugin::keyReleaseEventFilter(QObject *obj, QEvent *event)
 {
-    if (event->type() == QEvent::KeyRelease) {
+    if (event->type() == QEvent::KeyRelease && QEvent::KeyPress) {
         QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
         if (m_ref && gla_ref) {
-            keyReleaseEvent(keyEvent, *m_ref, gla_ref);
+            // Check if the released key is the Alt key
+            if (keyEvent->key() == Qt::Key_Alt) {
+                keyReleaseEvent(keyEvent, *m_ref, gla_ref);
+            }
         }
     }
-
     // Pass the event to the base class event filter
     return QObject::eventFilter(obj, event);
 }
 
-
 void EditSelectPlugin::keyReleaseEvent(QKeyEvent *e, MeshModel &m, GLArea *gla)
 {
-    m_ref = &m;
-    gla_ref = gla;
     bool ctrlState = currentGlobalParamSet->getBool("MeshLab::Editors::InvertCTRLBehavior");
 
     // global "all" commands
@@ -183,7 +179,28 @@ void EditSelectPlugin::keyReleaseEvent(QKeyEvent *e, MeshModel &m, GLArea *gla)
         } else {
             gla->setCursor(QCursor(QPixmap(":/images/sel_rect.png"), 1, 1));
         }
-        Qt::KeyboardModifiers mod = QApplication::queryKeyboardModifiers();
+        Qt::KeyboardModifiers mod = e->modifiers();
+        if (e->key() == Qt::Key_Alt)
+        {
+            if (ctrlState){
+                if (mod & Qt::ControlModifier){
+                    gla->setCursor(QCursor(QPixmap(":/images/sel_rect.png"), 1, 1));
+                } else if (mod & Qt::ShiftModifier){
+                    gla->setCursor(QCursor(QPixmap(":/images/sel_rect_minus.png"), 1, 1));
+                } else{
+                    gla->setCursor(QCursor(QPixmap(":/images/sel_rect_plus.png"), 1, 1));
+                }
+            } else{
+                if (mod & Qt::ControlModifier){
+                    gla->setCursor(QCursor(QPixmap(":/images/sel_rect_plus.png"), 1, 1));
+                } else if (mod & Qt::ShiftModifier){
+                    gla->setCursor(QCursor(QPixmap(":/images/sel_rect_minus.png"), 1, 1));
+                } else{
+                    gla->setCursor(QCursor(QPixmap(":/images/sel_rect.png"), 1, 1));
+                }
+            }
+            e->accept();
+        }
 
         switch (selectionMode) {
             case SELECT_VERT_MODE:
@@ -438,7 +455,7 @@ void EditSelectPlugin::mousePressEvent(QMouseEvent * event, MeshModel &m, GLArea
 
 
 
-void EditSelectPlugin::mouseMoveEvent(QMouseEvent * event, MeshModel & /*m*/, GLArea * gla)
+void EditSelectPlugin::mouseMoveEvent(QMouseEvent * event, MeshModel &m, GLArea * gla)
 {
     if (selectionMode == SELECT_AREA_MODE)
     {
@@ -465,7 +482,7 @@ void EditSelectPlugin::mouseMoveEvent(QMouseEvent * event, MeshModel & /*m*/, GL
     //    }
 }
 
-void EditSelectPlugin::mouseReleaseEvent(QMouseEvent * event, MeshModel &/*m*/, GLArea * gla)
+void EditSelectPlugin::mouseReleaseEvent(QMouseEvent * event, MeshModel &m, GLArea * gla)
 {
 	//gla->update();
 	if (gla == NULL)

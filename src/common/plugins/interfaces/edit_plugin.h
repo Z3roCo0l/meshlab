@@ -80,7 +80,7 @@ public:
 		startEdit(md, parent, cont);
 	}
 
-	virtual void decorate(MeshModel &m, GLArea *parent, QPainter * /*p*/) { decorate(m, parent); }
+    virtual void decorate(MeshModel &m, GLArea *parent, QPainter * /*p*/) { decorate(m, parent); }
 	virtual void decorate(MeshModel &/*m*/, GLArea * /*parent*/) {}
 
     virtual void mousePressEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *) = 0;
