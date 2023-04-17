@@ -60,7 +60,7 @@ if (MESHLAB_USE_DEFAULT_BUILD_AND_INSTALL_DIRS) # otherwise, we assume that all 
 
 	### Install Settings
 	if (NOT APPLE)
-		set(CMAKE_INSTALL_RPATH $ORIGIN/../lib/meshlab)
+		set(CMAKE_INSTALL_RPATH $ORIGIN/../${MESHLAB_LIB_INSTALL_DIR})
 	else()
 		SET(CMAKE_INSTALL_RPATH @executable_path/../Frameworks)
 	endif()
@@ -104,6 +104,7 @@ set(EXTERNAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
 add_subdirectory(${EXTERNAL_DIR})
 
 add_subdirectory(common)
+add_subdirectory(common_gui)
 
 if (NOT MESHLAB_BUILD_ONLY_LIBRARIES)
 	add_subdirectory(meshlab)
@@ -147,6 +148,8 @@ if(NOT DEFINED MESHLAB_PLUGINS) # it may be already defined in parent directory
 		meshlabplugins/filter_color_projection
 		meshlabplugins/filter_colorproc
 		meshlabplugins/filter_create
+		meshlabplugins/filter_cubization
+		meshlabplugins/filter_developability
 		meshlabplugins/filter_dirt
 		meshlabplugins/filter_fractal
 		meshlabplugins/filter_func

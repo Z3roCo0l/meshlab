@@ -34,10 +34,11 @@ $Log: stdpardialog.cpp,v $
 #include <QFontMetrics>
 #include <QSettings>
 
+#include <common_gui/rich_parameter/rich_parameter_list_frame.h>
+
 #include "mainwindow.h"
 #include "ui_layerDialog.h"
 #include "layerDialog.h"
-#include "rich_parameter_gui/richparameterlistframe.h"
 #include "../common/mlexception.h"
 
 using namespace std;
@@ -567,11 +568,10 @@ void LayerDialog::showContextMenu(const QPoint& pos)
 	}
 }
 
-void LayerDialog::updateLog(const GLLogStream &log)
+void LayerDialog::updateLog(GLLogStream &log)
 {
 	const QList< pair<int,QString> > &logStringList=log.logStringList();
-	ui->logPlainTextEdit->clear();
-	//ui->logPlainTextEdit->setFont(QFont("Courier",10));
+	//ui->logPlainTextEdit->clear();
 
 	pair<int,QString> logElem;
 #ifdef __APPLE__
@@ -600,6 +600,7 @@ void LayerDialog::updateLog(const GLLogStream &log)
 		logText += "<BR>";
 	}
 	ui->logPlainTextEdit->appendHtml(logText);
+	log.clear();
 }
 
 void LayerDialog::updateTable()
@@ -1288,7 +1289,7 @@ void DecoratorParamsTreeWidget::save()
 void DecoratorParamsTreeWidget::reset()
 {
 	for(auto& p : *frame)
-		p.second->resetValue();
+		p.second->resetWidgetToDefaultValue();
 	apply();
 }
 
@@ -1298,7 +1299,7 @@ void DecoratorParamsTreeWidget::apply()
 	for(auto& p : *frame) {
 		current.setValue(
 					p.first,
-					p.second->widgetValue());
+					*p.second->getWidgetValue());
 	}
 	mainWin->updateCustomSettings();
 	if (mainWin->GLA())
@@ -1329,3 +1330,9 @@ DecoratorParamItem::DecoratorParamItem( QAction* action):
 	QTreeWidgetItem(), act(action)
 {
 }
+
+void LayerDialog::on_cleanLogPushButton_clicked()
+{
+	ui->logPlainTextEdit->clear();
+}
+
