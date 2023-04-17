@@ -46,9 +46,10 @@ public:
     void mousePressEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *);
 	void mouseMoveEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *);
 	void mouseReleaseEvent(QMouseEvent *event, MeshModel &/*m*/, GLArea *);
-	void keyReleaseEvent(QKeyEvent *, MeshModel &/*m*/, GLArea *);
-	void keyPressEvent(QKeyEvent *, MeshModel &/*m*/, GLArea *);
+    void keyReleaseEvent(QKeyEvent *, MeshModel &m, GLArea *gla);
+    void keyPressEvent(QKeyEvent *, MeshModel &m, GLArea *gla);
     EditTool* getEditTool(const QAction *action);
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 	vcg::Point2f start;
 	vcg::Point2f cur;
@@ -73,6 +74,8 @@ signals:
 	void setDecorator(QString, bool);
 
 private:
+    MeshModel *m_ref;
+    GLArea *gla_ref;
     RichParameterList* currentGlobalParamSet;
     bool ctrlState;
 	typedef enum { SMAdd, SMClear, SMSub } ComposingSelMode; // How the selection are composed
